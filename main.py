@@ -4,6 +4,9 @@ win_height = 500
 window = display.set_mode((win_width, win_height))
 background = transform.scale(image.load('backgroundjpg.webp'), (700,500))
 font.init()
+score = 0
+score2 = 0
+font3 = font.Font(None,70)
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, speed_player, size_x, size_y):
         super().__init__()
@@ -36,6 +39,7 @@ pl1 =Player('player.png', 680, 200, 5, 20, 150)
 pl2 =Player2('player.png', 0, 200, 5, 20, 150)
 ball = GameSprite('i.webp', 350, 200, 5, 50, 50)
 
+
 clock = time.Clock()
 FPS = 60
 sped_x=5
@@ -43,9 +47,14 @@ speed_y=3
 font2 = font.Font(None, 70)
 
 lose = font2.render('You lose', True, (255, 0, 0))
-
+win1 = font2.render('You win 1 игрок', True, (255, 215, 0))
+win2 = font2.render('You win 2 игрок', True, (255, 215, 0))
 run = True
 while run:
+    print('счет 1' + str(score))
+    shet1 = font3.render('счет 1 ' + str(score), 1, (0,0,125))
+    shet2 = font3.render('счет 2 ' + str(score2), 1, (0,125,0))
+
     for e in event.get():
         if e.type == QUIT:
             run = False
@@ -58,9 +67,15 @@ while run:
     ball.update()
     ball.rect.x += sped_x
     ball.rect.y += speed_y
-    if sprite.collide_rect(pl1,ball) or sprite.collide_rect(pl2,ball):
+    if sprite.collide_rect(pl1,ball):
         sped_x *= -1
         speed_y *= 1
+        score2 +=1
+
+    if sprite.collide_rect(pl2,ball):
+        sped_x *= -1
+        speed_y *= 1
+        score += 1
     if ball.rect.y>=win_height:
         speed_y *= -1
     if ball.rect.y<=0:
@@ -69,7 +84,13 @@ while run:
         window.blit(lose, (win_width/2,win_height/2))
     if ball.rect.x <= 0:
         window.blit(lose, (win_width/2,win_height/2))
+    if score>20:
+        window.blit(win1,(250,250))
+    if score2>20:
+        window.blit(win2, (250,250))
 
+    window.blit(shet1,(0,50))
+    window.blit(shet2,(350,50))
     display.update()
     clock.tick(FPS)
 
